@@ -61,8 +61,20 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$product)
+    public function update(Request $request, $id)
     {
+        $request -> validate([
+            'product_name' => 'required|string',
+            'product_type' => 'required|integer',
+            'price' => 'required',
+        ]);
+
+        $product = Product::where('product_id',$id) -> update([
+            'product_name' => $request -> input('product_name'),
+            'product_type' => $request -> input('product_type'),
+            'price' => $request -> input('price'),
+        ]);
+
         $result = ['name' => 'update', 'payload' => $request->all()];
         return $result;
     }
@@ -75,9 +87,9 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::where('id',$id);
+        $product = Product::where('product_id',$id);
         $product->delete();
-        $result = ['name' => 'destroy', 'payload' => 'Delete.'];
+        $result = ['name' => 'destroy', 'payload' => 'Delete Successed'];
         return $result;
     }
 }
